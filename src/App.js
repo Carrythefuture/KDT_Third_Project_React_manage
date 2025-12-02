@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Main from "./pages/Main";
+import RequireAuth from "./pages/RequireAuth";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* 로그인 페이지는 누구나 접근 가능 */}
+        <Route path="/login" element={<Login />} />
+
+        {/* 보호된 페이지 */}
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <Main />
+            </RequireAuth>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
