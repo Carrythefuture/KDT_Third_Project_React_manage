@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { caxios } from "../config/config";
+import { caxios } from "../../config/config";
 import { useEffect, useState } from "react";
 
 function RequireAuth({ children }) {

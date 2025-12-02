@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Main from "./pages/Main";
-import RequireAuth from "./pages/RequireAuth";
+import Login from "./pages/Common/Login";
+import Main from "./pages/Common/Main";
+import RequireAuth from "./pages/Common/RequireAuth";
 
 function App() {
   return (
@@ -11,14 +11,10 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* 보호된 페이지 */}
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <Main />
-            </RequireAuth>
-          }
-        />
+        <Route path="/*" element={
+          <RequireAuth>
+            <Main />
+          </RequireAuth>} />
       </Routes>
     </BrowserRouter>
   );
