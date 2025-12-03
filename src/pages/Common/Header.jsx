@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 
 export default function Header() {
@@ -27,6 +27,12 @@ export default function Header() {
     borderBottom: "2px solid #007bff9f",
   };
 
+  const navigate = useNavigate();
+
+  const handleLogoutBtn = () => {
+    sessionStorage.removeItem("token");
+    navigate("/login");
+  }
   return (
     <div style={headerStyle}>
       <NavLink
@@ -57,7 +63,7 @@ export default function Header() {
         데이터 차트
       </NavLink>
 
-      <button className={styles.logout_btn}>로그아웃</button>
+      <button className={styles.logout_btn} onClick={handleLogoutBtn}>로그아웃</button>
     </div>
   );
 }

@@ -228,6 +228,16 @@ const MemberPage = () => {
       ellipsis: true,
     },
     {
+      title: '생년월일',
+      dataIndex: 'birth',
+      key: 'birth',
+      width: '20%',
+      onHeaderCell: () => ({
+        style: { textAlign: 'center' },
+      }),
+      ellipsis: true,
+    },
+    {
       title: '블랙',
       key: 'black',
       width: '5%',

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { caxios } from "../../config/config";
 import styles from "./Login.module.css";
@@ -33,6 +33,22 @@ const Login = () => {
       setError("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
   };
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+
+    const verify = async () => {
+      try {
+        await caxios.get("/auth/verify"); // 서버에서 JWT 검증
+        navigate("/"); // ✅ 로그인 상태면 바로 홈으로 이동
+      } catch (err) {
+        sessionStorage.removeItem("token"); // ❌ 위조/만료 토큰이면 삭제
+      }
+    };
+
+    verify();
+  }, [navigate]);
 
   return (
     <div className={styles.page}>
