@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "../Common/Header";
 import MemberPage from "../Member/MemberPage";
 import BoardPage from "../Board/BoardPage";
@@ -13,7 +13,7 @@ const Main = () => {
       <main >
         <Routes>
           {/* 기본 홈 */}
-          <Route index element={<div>여기는 홈입니다.</div>} />
+          <Route index element={<Navigate to="/member" replace />} />
           <Route path="member" element={<MemberPage />} />
           <Route path="black" element={<BlackPage />} />
           <Route path="board" element={<BoardPage />} />
