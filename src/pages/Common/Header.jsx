@@ -1,14 +1,16 @@
 import { NavLink } from "react-router-dom";
+import styles from "./Header.module.css";
 
 export default function Header() {
   const headerStyle = {
     display: "flex",
     gap: "20px",
-    padding: "15px 25px",
-    borderBottom: "1px solid #ddd",
-    backgroundColor: "#fff",
+    padding: "15px 25px 10px",
+
+    backgroundColor: "#ffffffff",
     fontSize: "17px",
     fontWeight: "600",
+    marginBottom: "20px"
   };
 
   const tabStyle = {
@@ -16,31 +18,46 @@ export default function Header() {
     borderRadius: "6px",
     textDecoration: "none",
     color: "#555",
-    transition: "0.2s",
   };
 
   const activeTabStyle = {
     ...tabStyle,
     backgroundColor: "#007bff20",
     color: "#007bff",
-    borderBottom: "2px solid #007bff",
+    borderBottom: "2px solid #007bff9f",
   };
 
   return (
     <div style={headerStyle}>
       <NavLink
-        to="/manage/member"
+        to="/member"
         style={({ isActive }) => (isActive ? activeTabStyle : tabStyle)}
       >
-        회원 관리
+        사용자 관리
+      </NavLink>
+      <NavLink
+        to="/black"
+        style={({ isActive }) => (isActive ? activeTabStyle : tabStyle)}
+      >
+        블랙리스트
       </NavLink>
 
+
       <NavLink
-        to="/manage/board"
+        to="/board"
         style={({ isActive }) => (isActive ? activeTabStyle : tabStyle)}
       >
         게시글 관리
       </NavLink>
+
+      <NavLink
+        to="/data"
+        style={({ isActive }) => (isActive ? activeTabStyle : tabStyle)}
+      >
+        데이터 차트
+      </NavLink>
+
+      <button className={styles.logout_btn}>로그아웃</button>
     </div>
   );
 }

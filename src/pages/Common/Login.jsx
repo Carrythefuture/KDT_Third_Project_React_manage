@@ -38,9 +38,9 @@ const Login = () => {
     <div className={styles.page}>
       <div className={styles.container}>
         <h2 className={styles.title}>로그인</h2>
-      
+
         <form className={styles.form} onSubmit={onSubmit}>
-          
+
           <div className={styles.formGroup}>
             <label className={styles.label}>아이디</label>
             <input
