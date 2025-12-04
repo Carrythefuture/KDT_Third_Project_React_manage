@@ -1,99 +1,69 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space, Table } from 'antd';
+import { Button, Input, Space, Table, Modal, message } from 'antd';
 import Highlighter from 'react-highlight-words';
-const data = [
-  {
-    key: '1',
-    id: "asd",
-    name: 'John Brown',
-    nickName: 'johnadsvadvad',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Joe Black',
-    nickName: 'john',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Jim Green',
-    nickName: 'john',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '5',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '6',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '7',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '8',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '9',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '10',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '11',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-  {
-    key: '12',
-    name: 'Jim Red',
-    nickName: 'john',
-    age: 32,
-    address: 'London No. 2 Lake Park',
-  },
-];
+import { caxios } from '../../config/config';
+import TextArea from 'antd/es/input/TextArea';
 
 const MemberPage = () => {
+  const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
+
+
+  // modal state
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [reasonText, setReasonText] = useState('');
+
+  const handleOpenBlackModal = (record) => {
+    setSelectedRecord(record);
+    setReasonText(''); // 초기화
+    setIsModalVisible(true);
+  };
+
+  const handleCancelModal = () => {
+    setIsModalVisible(false);
+    setSelectedRecord(null);
+    setReasonText('');
+  };
+
+  const handleConfirmBlack = async () => {
+    if (!selectedRecord) return;
+    if (!reasonText || reasonText.trim().length === 0) {
+      message.error('차단 사유를 입력하세요.');
+      return;
+    }
+
+    setModalLoading(true);
+    try {
+      const res = await caxios.post('/black', {
+        id: selectedRecord.id,
+        reason: reasonText.trim(),
+      });
+
+      setData(prev =>
+        prev.map(user =>
+          user.id === selectedRecord.id
+            ? { ...user, black: "true" }
+            : user
+        )
+      );
+      message.success('차단 처리되었습니다.');
+      handleCancelModal();
+    } catch (err) {
+      console.error(err);
+      message.error('차단 처리 중 오류가 발생했습니다.');
+      // 만약 토큰 문제 등으로 세션 초기화가 필요하면 여기에 처리
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+
+
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -106,9 +76,7 @@ const MemberPage = () => {
     setSearchText('');
   };
 
-  const handleBlackBtn = (record) => {
-    console.log(record);
-  }
+
 
   const getColumnSearchProps = dataIndex => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -172,7 +140,7 @@ const MemberPage = () => {
         text
       ),
   });
-  const columns = [
+  const columns = useMemo(() => [
     {
       title: '아이디',
 
@@ -198,10 +166,10 @@ const MemberPage = () => {
     },
     {
       title: '닉네임',
-      dataIndex: 'nickName',
-      key: 'nickName',
+      dataIndex: 'nickname',
+      key: 'nickname',
       width: '10%',
-      ...getColumnSearchProps('nickName'),
+      ...getColumnSearchProps('nickname'),
       onHeaderCell: () => ({
         style: { textAlign: 'center' },
       }),
@@ -241,18 +209,66 @@ const MemberPage = () => {
       title: '블랙',
       key: 'black',
       width: '5%',
-      render: (_, record) => (
-        <Button danger onClick={() => handleBlackBtn(record)}>
-          블랙
-        </Button>
-      ),
+      render: (_, record) => {
+        if (record.black === "true") {
+          return <div>블랙 유저</div>; // ✅ 이미 블랙이면 버튼 안 보여줌
+        }
+
+        return (
+          <Button danger onClick={() => handleOpenBlackModal(record)}>
+            블랙
+          </Button>
+        );
+      },
       align: 'center',
       onHeaderCell: () => ({
         style: { textAlign: 'center' },
       }),
       ellipsis: true,
     },
-  ];
-  return <Table columns={columns} pagination={{ placement: ['bottomCenter'] }} bordered dataSource={data} />;
+  ], [searchText, searchedColumn]);
+
+  useEffect(() => {
+    const getMemberList = async () => {
+      try {
+        const res = await caxios.get("/member"); // 서버에서 JWT 검증
+        console.log(res);
+
+        setData(res.data);
+      } catch (err) {
+        //sessionStorage.removeItem("token"); // ❌ 위조/만료 토큰이면 삭제
+        console.log("에러");
+      }
+    };
+
+    getMemberList();
+  }, [])
+
+  return (
+    <>
+      <Table columns={columns} pagination={{ placement: ['bottomCenter'] }} bordered dataSource={data} />
+
+      <Modal
+        title={`정말 ${selectedRecord?.id} 님을 블랙하시겠습니까?`}
+        open={isModalVisible}
+        onOk={handleConfirmBlack}
+        onCancel={handleCancelModal}
+        confirmLoading={modalLoading}
+        okText="확인"
+        cancelText="취소"
+      >
+        <div>
+          <label style={{ display: 'block', marginBottom: 8 }}>차단 사유</label>
+          <TextArea
+            value={reasonText}
+            onChange={(e) => setReasonText(e.target.value)}
+            rows={4}
+            placeholder="사유를 입력하세요"
+            style={{ resize: 'none' }}
+          />
+        </div>
+      </Modal>
+    </>
+  );
 };
 export default MemberPage;

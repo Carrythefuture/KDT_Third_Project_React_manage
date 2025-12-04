@@ -1,100 +1,55 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space, Table } from 'antd';
+import { Button, Input, message, Modal, Space, Table } from 'antd';
 import Highlighter from 'react-highlight-words';
-const data = [
-    {
-        key: '1',
-        id: "asd",
-        name: 'John Brown',
-        nickName: 'johnadsvadvad',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-    },
-    {
-        key: '2',
-        name: 'Joe Black',
-        nickName: 'john',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-    },
-    {
-        key: '3',
-        name: 'Jim Green',
-        nickName: 'john',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-    },
-    {
-        key: '4',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '5',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '6',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '7',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '8',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '9',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '10',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '11',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '12',
-        name: 'Jim Red',
-        nickName: 'john',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-];
+import { caxios } from '../../config/config';
+import TextArea from 'antd/es/input/TextArea';
 
 const BlackPage = () => {
+    const [data, setData] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+
+    // modal state
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [modalLoading, setModalLoading] = useState(false);
+    const [selectedRecord, setSelectedRecord] = useState(null);
+    
+
+    const handleOpenBlackModal = (record) => {
+        setSelectedRecord(record);
+        setIsModalVisible(true);
+    };
+
+    const handleCancelModal = () => {
+        setIsModalVisible(false);
+        setSelectedRecord(null);
+    };
+
+    const handleConfirmBlack = async () => {
+        if (!selectedRecord) return;
+
+        setModalLoading(true);
+        try {
+            const res = await caxios.post('/black/cancel', {
+                id: selectedRecord.id
+            });
+
+            setData(prev =>
+                prev.filter(user => user.id !== selectedRecord.id)
+            );
+            message.success('블랙이 해제되었습니다.');
+            handleCancelModal();
+        } catch (err) {
+            console.error(err);
+            message.error('블랙 해제 처리 중 오류가 발생했습니다.');
+            // 만약 토큰 문제 등으로 세션 초기화가 필요하면 여기에 처리
+        } finally {
+            setModalLoading(false);
+        }
+    };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -107,9 +62,6 @@ const BlackPage = () => {
         setSearchText('');
     };
 
-    const handleBlackBtn = (record) => {
-        console.log(record);
-    }
 
     const getColumnSearchProps = dataIndex => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -199,10 +151,10 @@ const BlackPage = () => {
         },
         {
             title: '닉네임',
-            dataIndex: 'nickName',
-            key: 'nickName',
+            dataIndex: 'nickname',
+            key: 'nickname',
             width: '10%',
-            ...getColumnSearchProps('nickName'),
+            ...getColumnSearchProps('nickname'),
             onHeaderCell: () => ({
                 style: { textAlign: 'center' },
             }),
@@ -220,11 +172,33 @@ const BlackPage = () => {
 
         },
         {
+            title: '차단일',
+            dataIndex: 'created_at',
+            key: 'created_at',
+            width: '20%',
+            onHeaderCell: () => ({
+                style: { textAlign: 'center' },
+            }),
+            ellipsis: true,
+
+        },
+        {
+            title: '관리자',
+            dataIndex: 'admin_id',
+            key: 'admin_id',
+            width: '10%',
+            onHeaderCell: () => ({
+                style: { textAlign: 'center' },
+            }),
+            ellipsis: true,
+
+        },
+        {
             title: '해제',
             key: 'black',
             width: '5%',
             render: (_, record) => (
-                <Button danger onClick={() => handleBlackBtn(record)}>
+                <Button danger onClick={() => handleOpenBlackModal(record)}>
                     해제
                 </Button>
             ),
@@ -235,7 +209,40 @@ const BlackPage = () => {
             ellipsis: true,
         },
     ];
-    return <Table columns={columns} pagination={{ placement: ['bottomCenter'] }} bordered dataSource={data} />;
+
+    useEffect(() => {
+        const getBlackList = async () => {
+            try {
+                const res = await caxios.get("/black"); // 서버에서 JWT 검증
+                console.log(res);
+
+                setData(res.data);
+            } catch (err) {
+                //sessionStorage.removeItem("token"); // ❌ 위조/만료 토큰이면 삭제
+                console.log("에러");
+            }
+        };
+
+        getBlackList();
+    }, [])
+
+    return (
+        <>
+            <Table columns={columns} pagination={{ placement: ['bottomCenter'] }} bordered dataSource={data} />;
+            <Modal
+                title={`정말 ${selectedRecord?.id}님의 블랙을 해제하시겠습니까?`}
+
+                open={isModalVisible}
+                onOk={handleConfirmBlack}
+                onCancel={handleCancelModal}
+                confirmLoading={modalLoading}
+                okText="확인"
+                cancelText="취소"
+            >
+            </Modal>
+        </>
+    );
+
 };
 
 export default BlackPage;
