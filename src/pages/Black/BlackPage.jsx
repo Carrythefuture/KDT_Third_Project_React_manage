@@ -4,7 +4,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, message, Modal, Space, Table } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { caxios } from '../../config/config';
-import TextArea from 'antd/es/input/TextArea';
+
 
 const BlackPage = () => {
     const [data, setData] = useState([]);

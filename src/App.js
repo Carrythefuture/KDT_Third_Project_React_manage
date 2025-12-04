@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Common/Login";
 import Main from "./pages/Common/Main";
 import RequireAuth from "./pages/Common/RequireAuth";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
