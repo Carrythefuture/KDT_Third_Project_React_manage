@@ -225,6 +225,17 @@ const MemberPage = () => {
         style: { textAlign: 'center' },
       }),
       ellipsis: true,
+      filters: [
+        {
+          text: '일반 유저',
+          value: 'false',
+        },
+        {
+          text: '블랙 유저',
+          value: 'true',
+        },
+      ],
+      onFilter: (value, record) => record.black.indexOf(value) === 0,
     },
   ], [searchText, searchedColumn]);
 

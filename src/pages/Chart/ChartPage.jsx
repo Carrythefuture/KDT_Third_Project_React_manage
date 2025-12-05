@@ -35,7 +35,7 @@ const ChartPage = () => {
     }, []);
 
     return (
-        <Container fluid>
+        <Container fluid >
             <Row>
                 <Col xs={12} md={6} className={styles.manage_layout}>
                     <AgeChart values={ageValues} />

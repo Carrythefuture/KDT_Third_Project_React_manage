@@ -1,6 +1,22 @@
+.manage_layout {
+    padding: 10px;        /* 각 차트 간격 확보 */
+    background-color: #fff;  /* 흰색 배경으로 차트 돋보이게 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;         /* 차트 높이 확보 */
+}
 
+/* 화면이 크면 더 넓게, 작은 화면이면 반응형 */
+@media (min-width: 1200px) {
+    .manage_layout {
+        height: 370px;
+    }
+}
 
-.manage_layout{
-    
-    padding: 10px;
+@media (max-width: 768px) {
+    .manage_layout {
+        height: 350px;
+        padding: 10px;
+    }
 }

@@ -5,28 +5,50 @@ import {
   BarElement,
   Tooltip,
   Legend,
-   Title,
+  Title,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import styles from "./ChartStyle.module.css";
 import { color } from "chart.js/helpers";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend,Title);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, Title);
 
-export default function BodyTypeChart({values}) {
+const bodyTypeMap = {
+  triangle: "A-삼각형",
+  inverted_triangle: "V-역삼각형",
+  rectangle: "H-직사각형",
+  apple: "O-원형",
+  hourglass: "X-모래시계형",
+  none: "미설정"
+};
+
+export default function BodyTypeChart({ values }) {
+  const labels = ["triangle", "inverted_triangle","rectangle", "apple","hourglass", "none"];
+  const map = new Map();
+
+  values.forEach(item => map.set(item.LABEL, item.CNT));
+
+  const dataValues = labels.map(label => map.get(label) || 0);
+
+
+  const mappedLabels = labels.map(label => bodyTypeMap[label] || label);
+  
+
+
   const data = {
-    labels: ["A-삼각형", "V-역삼각형", "H-직사각형","O-원형","X-모래시계형"],
+    labels: mappedLabels,
     datasets: [
       {
         label: "명",
-        
-        data: values,
-         backgroundColor: [
+
+        data: dataValues,
+        backgroundColor: [
           'rgba(255, 186, 201, 1)',
           'rgba(255, 214, 173, 1)',
           'rgba(255, 239, 202, 1)',
           'rgba(221, 255, 255, 1)',
           'rgba(191, 230, 255, 1)',
+          'rgba(126, 208, 255, 1)',
         ],
         borderColor: [
           'rgb(255, 99, 132)',
@@ -34,11 +56,12 @@ export default function BodyTypeChart({values}) {
           'rgb(255, 205, 86)',
           'rgb(75, 192, 192)',
           'rgb(54, 162, 235)',
+          'rgba(151, 214, 255, 1)',
         ],
       },
-      
+
     ],
-    
+
   };
 
   const options = {
@@ -49,7 +72,17 @@ export default function BodyTypeChart({values}) {
         display: true,
         text: '체형 타입',
         color: '#2a2a2aff', // 제목 글씨 검정색
-        font: { size: 18,color:"black" },
+        font: { size: 18, color: "black" },
+      },
+      legend: {
+        display: false,
+      
+      },
+       datalabels: {
+        anchor: 'end',     // 라벨 위치
+        // align: 'mid',      // 막대 위쪽에 표시
+        color: 'rgba(56, 56, 56, 1)',
+        
       },
     },
     scales: {
@@ -57,5 +90,5 @@ export default function BodyTypeChart({values}) {
     },
   };
 
-  return <Bar data={data} options={options} className={styles.border}/>;
+  return <Bar data={data} options={options} className={styles.border} />;
 }

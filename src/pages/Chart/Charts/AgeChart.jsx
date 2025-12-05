@@ -15,7 +15,7 @@ import styles from "./ChartStyle.module.css";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, Title, ChartDataLabels);
 
-export default function AgeChart({values}) {
+export default function AgeChart({ values }) {
   const dataValues = values.map(values => values.CNT);
   const data = {
 
@@ -51,14 +51,17 @@ export default function AgeChart({values}) {
         display: true,
         text: '연령대',
         color: '#2a2a2aff', // 제목 글씨 검정색
-        font: { size: 18,color:"black" },
+        font: { size: 18, color: "black" },
+      },
+      legend: {
+        display: false,
       },
 
       datalabels: {
         anchor: 'end',     // 라벨 위치
         // align: 'mid',      // 막대 위쪽에 표시
         color: 'rgba(56, 56, 56, 1)',
-        font: { size: 12 },
+        
       },
     },
     scales: {
@@ -66,5 +69,5 @@ export default function AgeChart({values}) {
     },
   };
 
-  return <Bar data={data} options={options} className={styles.border}/>;
+  return <Bar data={data} options={options} className={styles.border} />;
 }

@@ -10,22 +10,41 @@ import styles from "./ChartStyle.module.css";
 
 ChartJS.register(ArcElement, Tooltip, Legend); //차트에서 필요한 기능 꺼내쓰는 코드.
 
-export default function GenderChart({values}) {
+const genderMap = {
+    male: "남자",
+    female: "여자",
+    none: "미설정"
+};
+
+
+export default function GenderChart({ values }) {
+    const labels = ["male", "female", "none"];
+    const map = new Map();
+
+    values.forEach(item => map.set(item.GENDER, item.CNT));
+
+    const dataValues = labels.map(label => map.get(label) || 0);
+
+    const filteredLabels = labels.filter((_, i) => dataValues[i] > 0);
+
+    const mappedLabels = filteredLabels.map(label => genderMap[label] || label);
+    const filteredData = dataValues.filter(value => value > 0);
+
     const data = {
-        labels: ["남자", "여자", "그 외"],
+        labels: mappedLabels,
         datasets: [
             {
-                data: values,
+                data: filteredData,
                 borderWidth: 1,
                 backgroundColor: [
-                    'rgba(255, 192, 205, 1)',
-                    'rgba(255, 233, 182, 1)',
-                    'rgba(184, 226, 255, 1)',
+                    'rgba(255, 186, 201, 1)',
+                    'rgba(255, 214, 173, 1)',
+                    'rgba(255, 239, 202, 1)'
                 ],
                 borderColor: [
-                    'rgb(255, 99, 132)',
-                    'rgb(255, 205, 86)',
-                    'rgb(54, 162, 235)',
+                     'rgba(255, 186, 201, 1)',
+                    'rgba(255, 214, 173, 1)',
+                    'rgba(255, 239, 202, 1)'
                 ],
             },
         ],
@@ -40,10 +59,11 @@ export default function GenderChart({values}) {
                 display: true,
                 text: '성별 분포',
                 color: '#2a2a2aff', // 제목 글씨 검정색
-        font: { size: 18,color:"black" },
+                font: { size: 18, color: "black" },
             },
             legend: {
                 position: "right",
+                onClick: null
             },
             datalabels: {
                 color: 'rgba(56, 56, 56, 1)',
@@ -58,5 +78,5 @@ export default function GenderChart({values}) {
         },
     };
 
-    return <Pie data={data} options={options} className={styles.border}/>;
+    return <Pie data={data} options={options} className={styles.border} />;
 }
