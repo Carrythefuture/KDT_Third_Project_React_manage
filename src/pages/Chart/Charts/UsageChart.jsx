@@ -21,20 +21,24 @@ ChartJS.register(
     Legend
 );
 
-export default function UsageChart({values}) {
+export default function UsageChart({ values }) {
+    const dataValues = values.map(values => values.CNT);
 
     const data = {
-        labels: ["00~03","03~06", "06~09","09~12", "12~15","15~18", "18~21","21~24"],
+        labels: [
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11",
+            "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"
+        ],
         datasets: [
             {
-                label: "매출",
-                data: values,
+                label: "접속시간",
+                data: dataValues,
                 borderWidth: 2,
                 tension: 0.4, // 곡선
                 pointRadius: 8,
                 pointBackgroundColor: 'rgba(255, 52, 52, 1)', // 포인트 내부 색
-                  borderColor: 'rgba(255, 52, 52, 1)',
-                pointColor:'green'
+                borderColor: 'rgba(255, 52, 52, 1)',
+                pointColor: 'green'
             },
         ],
     };
@@ -44,7 +48,7 @@ export default function UsageChart({values}) {
         maintainAspectRatio: false, // true면 가로/세로 비율 유지, false면 자유롭게 높이/폭 조절
 
         plugins: {
-            legend: { position: "top", color: '#000' }, // 범례 글씨 검정},
+            legend: { display: false }, // 범례 글씨 검정},
 
             title: {
                 display: true,
