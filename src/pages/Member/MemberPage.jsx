@@ -208,7 +208,7 @@ const MemberPage = () => {
     {
       title: '블랙',
       key: 'black',
-      width: '5%',
+      width: '6%',
       render: (_, record) => {
         if (record.black === "true") {
           return <div>블랙 유저</div>; // ✅ 이미 블랙이면 버튼 안 보여줌

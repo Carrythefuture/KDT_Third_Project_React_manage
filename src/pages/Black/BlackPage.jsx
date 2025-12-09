@@ -196,7 +196,7 @@ const BlackPage = () => {
         {
             title: '해제',
             key: 'black',
-            width: '5%',
+            width: '6%',
             render: (_, record) => (
                 <Button danger onClick={() => handleOpenBlackModal(record)}>
                     해제
