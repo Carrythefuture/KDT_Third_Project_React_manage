@@ -14,16 +14,16 @@ import { color } from "chart.js/helpers";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, Title);
 
 const bodyTypeMap = {
-  triangle: "A-삼각형",
-  inverted_triangle: "V-역삼각형",
-  rectangle: "H-직사각형",
-  apple: "O-원형",
-  hourglass: "X-모래시계형",
+  A: "A-삼각형",
+  V: "V-역삼각형",
+  H: "H-직사각형",
+  O: "O-원형",
+  X: "X-모래시계형",
   none: "미설정"
 };
 
 export default function BodyTypeChart({ values }) {
-  const labels = ["triangle", "inverted_triangle","rectangle", "apple","hourglass", "none"];
+  const labels = ["A", "V","H", "O","X", "none"];
   const map = new Map();
 
   values.forEach(item => map.set(item.LABEL, item.CNT));
