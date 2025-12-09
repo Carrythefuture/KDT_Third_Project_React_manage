@@ -16,7 +16,7 @@ const BlackPage = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
-    
+
 
     const handleOpenBlackModal = (record) => {
         setSelectedRecord(record);
@@ -228,7 +228,14 @@ const BlackPage = () => {
 
     return (
         <>
-            <Table columns={columns} pagination={{ placement: ['bottomCenter'] }} bordered dataSource={data} />;
+            <Table columns={columns}
+                pagination={{ placement: ['bottomCenter'] }}
+                bordered dataSource={data}
+                onRow={() => ({
+                    style: {
+                        height: 65,          // ✅ tr 높이
+                    },
+                })} />;
             <Modal
                 title={`정말 ${selectedRecord?.id}님의 블랙을 해제하시겠습니까?`}
 

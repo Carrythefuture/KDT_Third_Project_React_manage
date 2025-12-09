@@ -257,8 +257,16 @@ const MemberPage = () => {
 
   return (
     <>
-      <Table columns={columns} pagination={{ placement: ['bottomCenter'] }} bordered dataSource={data} />
-
+      <div>
+        <Table columns={columns}
+          pagination={{ placement: ['bottomCenter'] }}
+          bordered dataSource={data}
+          onRow={() => ({
+            style: {
+              height: 65,          // ✅ tr 높이
+            },
+          })} />
+      </div>
       <Modal
         title={`정말 ${selectedRecord?.id} 님을 블랙하시겠습니까?`}
         open={isModalVisible}

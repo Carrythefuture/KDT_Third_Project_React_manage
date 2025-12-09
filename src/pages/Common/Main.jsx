@@ -6,13 +6,17 @@ import BlackPage from "../Black/BlackPage";
 
 import ChartPage from "../Chart/ChartPage";
 
+import styles from "./Main.module.css";
+
 const Main = () => {
   return (
-    <div>
-      <div style={{ paddingLeft: "20px", paddingBottom: "10px", paddingTop: "10px", fontSize: "30px", fontWeight: "bold" }}>TNT 관리자 페이지</div>
+    <div className={styles.container}>
+      <div className={styles.header}>TNT 관리자</div>
+
+      <div  className={styles.body}>
       <Header />
       
-      <main >
+      <main>
         <Routes>
           {/* 기본 홈 */}
           <Route index element={<Navigate to="/member" replace />} />
@@ -24,6 +28,7 @@ const Main = () => {
           <Route path="*" element={<h2>404 Not Found</h2>} />
         </Routes>
       </main>
+      </div>
     </div>
   );
 };

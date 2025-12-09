@@ -2,20 +2,23 @@ import { NavLink, useNavigate } from "react-router-dom";
 import styles from "./Header.module.css";
 
 export default function Header() {
+
+  
   const headerStyle = {
     display: "flex",
-    gap: "20px",
+    gap: "15px",
     padding: "15px 25px 10px",
 
     backgroundColor: "#ffffffff",
     fontSize: "17px",
     fontWeight: "600",
-    marginBottom: "20px"
+    borderBottom:"1px solid #e4e4e4ff",
+    
   };
 
   const tabStyle = {
     padding: "8px 14px",
-    borderRadius: "6px",
+    borderRadius: "13px",
     textDecoration: "none",
     color: "#555",
   };
@@ -24,7 +27,7 @@ export default function Header() {
     ...tabStyle,
     backgroundColor: "#007bff20",
     color: "#007bff",
-    borderBottom: "2px solid #007bff9f",
+    borderBottom: "2px solid #007bff5d",
   };
 
   const navigate = useNavigate();
